@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Preloader from "../../components/Preloader";
+import { BASE_URL } from "../../utils/constants";
 
 const VideoDetailPage = () => {
   const { videoId } = useParams();
@@ -12,7 +13,7 @@ const VideoDetailPage = () => {
   useEffect(() => {
     const fetchVideoDetails = async () => {
       try {
-        const response = await fetch(`https://ec3e-91-245-79-242.ngrok-free.app/api/video/${videoId}`, {
+        const response = await fetch(`${BASE_URL}/${videoId}`, {
           method: 'GET',
         });
         if (!response.ok) {

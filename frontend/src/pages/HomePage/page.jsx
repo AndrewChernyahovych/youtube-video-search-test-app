@@ -5,6 +5,8 @@ import PopularSearches from "../../components/PopularSearches";
 import { useSearch } from "../../context/SearchContext";
 import Preloader from "../../components/Preloader";
 
+import { BASE_URL } from '../../utils/constants';
+
 const HomePage = () => {
   const { addSearch } = useSearch();
   const [nextPageToken, setNextPageToken] = useState();
@@ -35,8 +37,8 @@ const HomePage = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`https://ec3e-91-245-79-242.ngrok-free.app/api/video/search?query=${encodeURIComponent(searchQuery)}&pageToken=${nextPageToken}&maxResults=3`, {
-        method: 'POST',
+      const response = await fetch(`${BASE_URL}/search?query=${encodeURIComponent(searchQuery)}&pageToken=${nextPageToken}&maxResults=3`, {
+        method: 'GET',
       });
 
       if (!response.ok) {
@@ -60,8 +62,8 @@ const HomePage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`https://ec3e-91-245-79-242.ngrok-free.app/api/video/search?query=${encodeURIComponent(query)}&pageToken=${nextPageToken}&maxResults=3`, {
-          method: 'POST',
+        const response = await fetch(`${BASE_URL}/search?query=${encodeURIComponent(query)}&pageToken=${nextPageToken}&maxResults=3`, {
+          method: 'GET',
         });
 
         if (!response.ok) {
@@ -85,8 +87,8 @@ const HomePage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`https://ec3e-91-245-79-242.ngrok-free.app/api/video/search?query=${encodeURIComponent(query)}&pageToken=${prevPageToken}&maxResults=3`, {
-          method: 'POST',
+        const response = await fetch(`${BASE_URL}/search?query=${encodeURIComponent(query)}&pageToken=${prevPageToken}&maxResults=3`, {
+          method: 'GET',
         });
 
         if (!response.ok) {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Preloader from "./Preloader";
+import { BASE_URL } from '../utils/constants';
 
 const RecentSearches = ({ onSearch }) => {
   const [loading, setLoading] = useState(true);
@@ -10,9 +11,9 @@ const RecentSearches = ({ onSearch }) => {
     const fetchVideoHistory = async () => {
       try {
         const response = await fetch(
-          "https://ec3e-91-245-79-242.ngrok-free.app/api/video/history",
+          `${BASE_URL}/history`,
           {
-            method: "POST",
+            method: "GET",
           }
         );
         if (!response.ok) {

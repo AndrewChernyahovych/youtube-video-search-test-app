@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Preloader from './Preloader';
+import { BASE_URL } from '../utils/constants';
 
 const PopularSearches = ({ onSearch }) => {
   const [popularSearches, setPopularSearches] = useState([]);
@@ -9,8 +10,8 @@ const PopularSearches = ({ onSearch }) => {
   useEffect(() => {
     const fetchVideoHistory = async () => {
       try {
-        const response = await fetch('https://ec3e-91-245-79-242.ngrok-free.app/api/video/analytics', {
-          method: 'POST',
+        const response = await fetch(`${BASE_URL}/analytics`, {
+          method: 'GET',
         });
         if (!response.ok) {
           throw new Error('Network response was not ok ' + response.statusText);
