@@ -56,8 +56,34 @@ const getHistory = async () => {
   }
 };
 
+const getAnalytics = async () => {
+  try {
+    const result = await prisma.searchQuery.groupBy({
+      by: ["query"],
+      _count: {
+        query: true,
+      },
+      orderBy: {
+        _count: {
+          query: "desc",
+        },
+      },
+    });
+
+    const analytics = result.map((item) => ({
+      query: item.query,
+      count: item._count.query,
+    }));
+
+    return analytics;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
 module.exports = {
   saveQuery,
   getVideos,
   getHistory,
+  getAnalytics,
 };
