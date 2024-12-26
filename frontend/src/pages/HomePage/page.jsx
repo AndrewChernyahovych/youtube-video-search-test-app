@@ -10,15 +10,19 @@ const HomePage = () => {
   const [nextPageToken, setNextPageToken] = useState();
   const [prevPageToken, setPrevPageToken] = useState();
   const [currentPageToken, setCurrentPageToken] = useState(null);
-  const [results, setResults] = useState(() => {
-    const savedResults = localStorage.getItem("searchResults");
-    return savedResults ? JSON.parse(savedResults) : [];
-  });
+  const [results, setResults] = useState([]);
   const [query, setQuery] = useState(() => {
     return localStorage.getItem("searchQuery") || "";
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const savedResults = localStorage.getItem("searchResults");
+    if (savedResults) {
+      setResults(JSON.parse(savedResults));
+    }
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("searchQuery", query);
