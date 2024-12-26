@@ -3,6 +3,7 @@ const {
   getVideos,
   getHistory,
   getAnalytics,
+  getVideoDetails,
 } = require("../services/video.service");
 const { sendSuccessResponse, sendErrorResponse } = require("../utils/helpers")
 
@@ -35,9 +36,19 @@ const getAnalyticsHandler = async (req, res) => {
   }
 };
 
+const getVideoDetailsHandler = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const video = await getVideoDetails(id);
+    return sendSuccessResponse(res, video, 200);
+  } catch (error) {
+    return sendErrorResponse(res, error.message, 400);
+  }
+};
 
 module.exports = {
   getVideoListHandler,
   getHistoryHandler,
   getAnalyticsHandler,
+  getVideoDetailsHandler,
 };

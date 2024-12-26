@@ -19,9 +19,10 @@ const getVideos = async (data) => {
   const { query, pageToken, maxResults } = data;
   try {
     const response = await axios.get(
-      `${VIDEO_BASE_URL}/search?key=${key}&type=video&part=snippet&q=${query}&maxResults=${maxResults}`
+      `${VIDEO_BASE_URL}/search?key=${key}&type=video&part=snippet&q=${query}&maxResults=${maxResults}&${
+        pageToken || ""
+      }`
     );
-    //&pageToken=${pageToken}
     const results = response.data.items.map((item) => ({
       videoId: item.id.videoId,
       title: item.snippet.title,
@@ -79,11 +80,37 @@ const getAnalytics = async () => {
   } catch (error) {
     throw new Error(error.message);
   }
-}
+};
+
+const getVideoDetails = async (id) => {
+  try {
+    const response = await axios.get(
+      `${VIDEO_BASE_URL}/videos?key=${key}&id=${id}&part=snippet,statistics`
+    );
+    if (response.data.items && response.data.items.length > 0) {
+      const video = response.data.items[0];
+      const videoDetails = {
+        videoId: video.id,
+        title: video.snippet.title,
+        description: video.snippet.description,
+        thumbnailUrl: video.snippet.thumbnails.high.url,
+        publishedAt: video.snippet.publishedAt,
+        viewCount: video.statistics.viewCount,
+        likeCount: video.statistics.likeCount,
+        commentCount: video.statistics.commentCount,
+      };
+
+      return videoDetails;
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
 module.exports = {
   saveQuery,
   getVideos,
   getHistory,
   getAnalytics,
+  getVideoDetails,
 };
