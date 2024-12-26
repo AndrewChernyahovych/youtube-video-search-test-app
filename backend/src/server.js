@@ -9,7 +9,7 @@ const videoRouter = require("./routes/videoRouter")
 const app = express();
 const PORT = 9000;
 
-app.use(cors({ origin: "*" }));
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
