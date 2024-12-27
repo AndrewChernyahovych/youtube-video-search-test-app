@@ -1,21 +1,45 @@
-const axios = require("axios");
-const { PrismaClient } = require("@prisma/client");
+import axios from "axios";
+import { PrismaClient } from "@prisma/client";
+import { VIDEO_BASE_URL } from "../utils/constants";
+
 const prisma = new PrismaClient();
+const key = process.env.YOUTUBE_API_KEY as string;
 
-const { VIDEO_BASE_URL } = require("../utils/constants");
-const key = process.env.YOUTUBE_API_KEY;
+interface VideoQueryData {
+  query: string;
+  pageToken?: string;
+  maxResults?: number;
+}
 
-const saveQuery = async (query) => {
+interface VideoDetails {
+  videoId: string;
+  title: string;
+  description: string;
+  thumbnailUrl: string;
+  publishedAt: string;
+  viewCount?: string;
+  likeCount?: string;
+  commentCount?: string;
+}
+
+interface VideoResponse {
+  results: VideoDetails[];
+  totalResults: number;
+  nextPageToken: string | null;
+  prevPageToken: string | null;
+}
+
+export const saveQuery = async (query: string): Promise<void> => {
   try {
     await prisma.searchQuery.create({
       data: { query },
     });
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error.message);
   }
 };
 
-const getVideos = async (data) => {
+export const getVideos = async (data: VideoQueryData): Promise<VideoResponse> => {
   const { query, pageToken, maxResults } = data;
   try {
     const response = await axios.get(
@@ -23,7 +47,8 @@ const getVideos = async (data) => {
         pageToken || ""
       }`
     );
-    const results = response.data.items.map((item) => ({
+
+    const results: VideoDetails[] = response.data.items.map((item: any) => ({
       videoId: item.id.videoId,
       title: item.snippet.title,
       description: item.snippet.description,
@@ -31,20 +56,20 @@ const getVideos = async (data) => {
       publishedAt: item.snippet.publishedAt,
     }));
 
-    const formattedResponse = {
-      results: results,
+    const formattedResponse: VideoResponse = {
+      results,
       totalResults: response.data.pageInfo.totalResults,
       nextPageToken: response.data.nextPageToken || null,
       prevPageToken: response.data.prevPageToken || null,
     };
 
     return formattedResponse;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error.message);
   }
 };
 
-const getHistory = async () => {
+export const getHistory = async (): Promise<{ query: string; timestamp: string }[]> => {
   try {
     const history = await prisma.searchQuery.findMany();
     const formattedHistory = history.map((item) => ({
@@ -52,12 +77,12 @@ const getHistory = async () => {
       timestamp: item.createdAt.toISOString(),
     }));
     return formattedHistory;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error.message);
   }
 };
 
-const getAnalytics = async () => {
+export const getAnalytics = async (): Promise<{ query: string; count: number }[]> => {
   try {
     const result = await prisma.searchQuery.groupBy({
       by: ["query"],
@@ -77,19 +102,20 @@ const getAnalytics = async () => {
     }));
 
     return analytics;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error.message);
   }
 };
 
-const getVideoDetails = async (id) => {
+export const getVideoDetails = async (id: string): Promise<VideoDetails | null> => {
   try {
     const response = await axios.get(
       `${VIDEO_BASE_URL}/videos?key=${key}&id=${id}&part=snippet,statistics`
     );
+
     if (response.data.items && response.data.items.length > 0) {
       const video = response.data.items[0];
-      const videoDetails = {
+      const videoDetails: VideoDetails = {
         videoId: video.id,
         title: video.snippet.title,
         description: video.snippet.description,
@@ -102,15 +128,9 @@ const getVideoDetails = async (id) => {
 
       return videoDetails;
     }
-  } catch (error) {
+
+    return null;
+  } catch (error: any) {
     throw new Error(error.message);
   }
-};
-
-module.exports = {
-  saveQuery,
-  getVideos,
-  getHistory,
-  getAnalytics,
-  getVideoDetails,
 };

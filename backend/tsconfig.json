@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "ES6",
+    "lib": ["ES6"],
+    "typeRoots": ["node_modules/@types"]
+  }
+}
+
