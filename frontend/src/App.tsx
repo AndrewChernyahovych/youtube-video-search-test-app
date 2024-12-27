@@ -1,8 +1,8 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { SearchProvider } from "./context/SearchContext.js";
-import HomePage from "./pages/HomePage/page.jsx";
-import VideoDetailPage from "./pages/VideoDetailPage/page.jsx";
+import { SearchProvider } from "./context/SearchContext";
+import HomePage from "./pages/HomePage/page";
+import VideoDetailPage from "./pages/VideoDetailPage/page";
 
 function App() {
   return (

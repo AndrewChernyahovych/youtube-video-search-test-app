@@ -2,10 +2,19 @@ import React, { useEffect, useState } from "react";
 import Preloader from "./Preloader";
 import { BASE_URL } from '../utils/constants';
 
-const RecentSearches = ({ onSearch }) => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [recentSearches, setRecentSearches] = useState([]);
+interface Search {
+  query: string;
+  timestamp: string;
+}
+
+interface RecentSearchesProps {
+  onSearch: (query: string) => void;
+}
+
+const RecentSearches: React.FC<RecentSearchesProps> = ({ onSearch }) => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [recentSearches, setRecentSearches] = useState<Search[]>([]);
 
   useEffect(() => {
     const fetchVideoHistory = async () => {
@@ -21,7 +30,7 @@ const RecentSearches = ({ onSearch }) => {
         }
         const data = await response.json();
         const sortedHistory = data.history.sort(
-          (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+          (a: Search, b: Search) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
         );
         setRecentSearches(sortedHistory.slice(0, 10));
         setLoading(false);
@@ -48,7 +57,7 @@ const RecentSearches = ({ onSearch }) => {
         <Preloader />
       ) : (
         <ul>
-          {recentSearches?.map((search, index) => (
+          {recentSearches.map((search, index) => (
             <li
               key={index}
               className="cursor-pointer text-gray-300 hover:bg-gray-600 p-2 rounded transition duration-200"

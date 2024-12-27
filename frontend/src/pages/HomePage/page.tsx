@@ -2,22 +2,21 @@ import React, { useState, useCallback, useEffect } from "react";
 import SearchInput from "../../components/SearchInput";
 import SearchResults from "../../components/SearchResults";
 import PopularSearches from "../../components/PopularSearches";
-import { useSearch } from "../../context/SearchContext";
 import Preloader from "../../components/Preloader";
-
 import { BASE_URL } from '../../utils/constants';
+import { useSearch } from "../../context/SearchContext";
 
-const HomePage = () => {
-  const { addSearch } = useSearch();
-  const [nextPageToken, setNextPageToken] = useState();
-  const [prevPageToken, setPrevPageToken] = useState();
-  const [currentPageToken, setCurrentPageToken] = useState(null);
-  const [results, setResults] = useState([]);
-  const [query, setQuery] = useState(() => {
+const HomePage: React.FC = () => {
+  const { addSearch } = useSearch() as { addSearch: (searchQuery: string) => void };
+  const [nextPageToken, setNextPageToken] = useState<string | undefined>();
+  const [prevPageToken, setPrevPageToken] = useState<string | undefined>();
+  const [currentPageToken, setCurrentPageToken] = useState<string | null>(null);
+  const [results, setResults] = useState<any[]>([]);
+  const [query, setQuery] = useState<string>(() => {
     return localStorage.getItem("searchQuery") || "";
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const savedResults = localStorage.getItem("searchResults");
@@ -28,10 +27,9 @@ const HomePage = () => {
 
   useEffect(() => {
     localStorage.setItem("searchQuery", query);
-    localStorage.setItem("searchResults", JSON.stringify(results));
-  }, [query, results]);
+  }, [query]);
 
-  const handleSearch = useCallback(async (searchQuery) => {
+  const handleSearch = useCallback(async (searchQuery: string) => {
     setQuery(searchQuery);
     addSearch(searchQuery);
     setLoading(true);
@@ -50,6 +48,8 @@ const HomePage = () => {
       setNextPageToken(data.nextPageToken);
       setPrevPageToken(data.prevPageToken);
       setCurrentPageToken(null);
+
+      localStorage.setItem("searchResults", JSON.stringify(data.results));
     } catch (error) {
       setError("Error fetching data. Please try again.");
     } finally {

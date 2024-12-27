@@ -2,10 +2,19 @@ import React, { useEffect, useState } from 'react';
 import Preloader from './Preloader';
 import { BASE_URL } from '../utils/constants';
 
-const PopularSearches = ({ onSearch }) => {
-  const [popularSearches, setPopularSearches] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+interface PopularSearch {
+  query: string;
+  count: number;
+}
+
+interface PopularSearchesProps {
+  onSearch: (query: string) => void;
+}
+
+const PopularSearches: React.FC<PopularSearchesProps> = ({ onSearch }) => {
+  const [popularSearches, setPopularSearches] = useState<PopularSearch[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchVideoHistory = async () => {

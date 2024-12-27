@@ -1,7 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const SearchResults = ({ results }) => {
+interface SearchResult {
+  videoId: string;
+  title: string;
+  description: string;
+  thumbnailUrl: string;
+  publishedAt: string;
+}
+
+interface SearchResultsProps {
+  results: SearchResult[];
+}
+
+const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {results.map((item) => (

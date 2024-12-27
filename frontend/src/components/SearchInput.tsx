@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import RecentSearches from './RecentSearches';
 
-const SearchInput = ({ onSearch }) => {
-  const [query, setQuery] = useState('');
-  const [showRecentSearches, setShowRecentSearches] = useState(false);
-  const recentSearchesRef = useRef(null);
-  const inputRef = useRef(null);
+interface SearchInputProps {
+  onSearch: (query: string) => void;
+}
+
+const SearchInput: React.FC<SearchInputProps> = ({ onSearch }) => {
+  const [query, setQuery] = useState<string>('');
+  const [showRecentSearches, setShowRecentSearches] = useState<boolean>(false);
+  const recentSearchesRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const savedQuery = localStorage.getItem('searchQuery');
@@ -14,7 +18,7 @@ const SearchInput = ({ onSearch }) => {
     }
   }, []);
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
 
@@ -25,18 +29,18 @@ const SearchInput = ({ onSearch }) => {
     setShowRecentSearches(false);
   };
 
-  const handleKeyPress = (event) => {
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       handleSearch();
     }
   };
 
-  const handleClickOutside = (event) => {
+  const handleClickOutside = (event: MouseEvent) => {
     if (
       recentSearchesRef.current &&
-      !recentSearchesRef.current.contains(event.target) &&
+      !recentSearchesRef.current.contains(event.target as Node) &&
       inputRef.current &&
-      !inputRef.current.contains(event.target)
+      !inputRef.current.contains(event.target as Node)
     ) {
       setShowRecentSearches(false);
     }
@@ -49,7 +53,7 @@ const SearchInput = ({ onSearch }) => {
     };
   }, []);
 
-  const handleRecentSearchSelect = (searchQuery) => {
+  const handleRecentSearchSelect = (searchQuery: string) => {
     setQuery(searchQuery);
     onSearch(searchQuery);
     setShowRecentSearches(false);
